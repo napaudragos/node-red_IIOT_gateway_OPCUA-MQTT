@@ -1,57 +1,60 @@
 # 🌐 Industrial IIoT Gateway: Integrare OPC UA și MQTT în Node-RED
 
-Acest proiect a fost dezvoltat în cadrul laboratoarelor de specialitate (Anul 4, Politehnica) și servește drept punte de legătură (Gateway) între protocoalele industriale clasice și tehnologiile moderne de tip IoT.
+Acest proiect a fost realizat în cadrul laboratoarelor de specialitate din anul 4 (Politehnica) și reprezintă o soluție de tip **IIoT Gateway**. Rolul său este de a prelua date din echipamente industriale (via OPC UA) și de a le transpună într-un format accesibil pentru monitorizare de la distanță (via MQTT).
 
 > [!IMPORTANT]
-> **Notă Laborator:** Aceasta este versiunea finală care a funcționat perfect cu aparatura reală din laborator (PLC, senzori industriali și server OPC UA).
+> **Context Laborator:** Aceasta este versiunea originală care a funcționat cu succes pe aparatura de laborator (PLC Siemens, server OPC UA și senzori industriali). Proiectul demonstrează managementul fluxului de date între protocoale industriale (OT) și protocoale IoT (IT).
 
 ---
 
-## 📋 Prezentare Generală
+## 📊 Arhitectura și Logică
 
-Obiectivul principal al proiectului este extragerea datelor de telemetrie de la un motor industrial și un potențiometru de proces folosind protocolul **OPC UA**, procesarea acestora și retransmiterea lor via **MQTT** către un dashboard de monitorizare în timp real.
+Proiectul este structurat în trei fluxuri principale, fiecare având un rol specific în procesarea telemetriei:
 
-### Componente Principale:
-1. **Data Acquisition (OPC UA):** Scanarea automată a tag-urilor și abonarea (Subscribe) la variabilele de proces.
-2. **Data Bridge (MQTT):** Conversia datelor industriale în mesaje ușoare pentru mediul cloud/IT.
-3. **Interfață HMI:** Vizualizarea stării motorului și a valorilor citite prin Node-RED Dashboard.
+### 1. Extracția Dinamică (OPC UA Browser)
+În loc să adaug manual fiecare adresă, am implementat un flux care scanează serverul:
+* **Nodul Extract NodeID:** Un script JavaScript care filtrează tag-urile valide și salvează automat NodeID-urile în memoria locală a flow-ului (`flow context`). 
+* Această abordare face sistemul mult mai flexibil la schimbările de pe serverul OPC UA.
 
----
+### 2. Puntea de Date (OPC UA -> MQTT)
+Sistemul se abonează la variabilele critice ale motorului din laborator:
+* **Filtrare Potențiometru (`ns=4;i=81`):** Datele sunt scalate și trimise pe topicul MQTT `senzor/potentiometru`.
+* **Filtrare Avarii Motor (`ns=4;i=61`):** Starea bitului de avarie este monitorizată și trimisă pe topicul `senzor/cuvant_avarii_motor`.
 
-## 🛠️ Detalii Tehnice & Logică
-
-### 1. Extracția Datelor (OPC UA)
-Am implementat o logică de tip **Browser** care extrage automat NodeID-urile valide de pe server. Nodul de funcție `Extract NodeID` filtrează tag-urile de tip "Null" și salvează lista în memoria locală (`flow context`) pentru a fi utilizată de nodul de **Subscribe**.
-* **Endpoint Lab:** `opc.tcp://192.168.50.96:4840`
-
-### 2. Procesarea și Filtrarea (JavaScript)
-Datele brute primite prin OPC UA sunt trecute prin noduri de tip `Function` pentru curățare și rutare:
-* **Filtrare Potențiometru:** Identifică ID-ul specific (`ns=4;i=81`) și scalează valoarea pentru a fi trimisă pe topic-ul MQTT `senzor/potentiometru`.
-* **Filtrare Avarii Motor:** Monitorizează registrul de avarii (`ns=4;i=61`) și trimite starea către topic-ul `senzor/cuvant_avarii_motor`.
-
-### 3. Monitorizarea (Dashboard)
-Sistemul dispune de o interfață grafică ce conține:
-* **Indicator de tip Donut (Gauge):** Pentru afișarea poziției potențiometrului (0-100%).
-* **Câmp Text Dinamic:** Pentru afișarea în clar a cuvântului de avarie primit de la motor.
+### 3. Monitorizare și Dashboard
+Interfața HMI este realizată cu **Node-RED Dashboard** și oferă:
+* Vizualizarea poziției potențiometrului printr-un indicator de tip **Gauge (Donut)**.
+* Afișarea stării avariilor într-un câmp de tip **Text dinamic**.
 
 ---
 
-## 📂 Structura Repozitoriului
+## 🎮 Interactivitate și Control Manual
 
-* `flows.json`: Fișierul sursă care conține întreaga logică a nodurilor.
-* `Screenshot_Flow.png`: Captură de ecran cu arhitectura logică a proiectului.
+Spre deosebire de un sistem complet automatizat, am ales să implementez controlul manual al sesiunilor pentru a face demonstrația mai interesantă și pentru a simula controlul asupra fluxului de date:
+
+* **Conectare/Deconectare Broker:** Conexiunea la serverul MQTT nu este automată; am creat noduri de tip `Inject` (butoane) care permit pornirea sau oprirea manuală a legăturii cu brokerul.
+* **Abonare/Dezabonare (Subscribe/Unsubscribe):** Utilizatorul poate decide momentul în care dorește să înceapă recepția datelor de la senzori. 
+* *De ce?* Această logică este utilă în scenarii de mentenanță sau debugging, permițând controlul precis asupra traficului de rețea.
 
 ---
 
-## 🚀 Cum se utilizează
+## 🛠️ Specificații Tehnice
 
-1. Asigurați-vă că aveți **Node-RED** instalat.
-2. Instalați următoarele librării din *Manage Palette*:
+* **Protocoale:** OPC UA (Industrial), MQTT (IoT).
+* **Limbaje:** JavaScript (în nodurile de funcție Node-RED).
+* **Hardware Interfațat:** PLC Industrial (Server OPC UA), Motor cu convertizor, Potențiometru de proces.
+
+---
+
+## 🚀 Instalare și Rulare
+
+1. Instalați **Node-RED** local.
+2. Din meniul *Manage Palette*, instalați următoarele librării necesare:
    * `node-red-dashboard`
    * `node-red-contrib-opcua`
-3. Importați fișierul `flows.json` în editorul Node-RED.
-4. Apăsați butonul **Deploy**.
-5. Accesați dashboard-ul la adresa: `http://localhost:1880/ui`.
+3. Importați fișierul `flows.json` în spațiul de lucru.
+4. Apăsați **Deploy**.
+5. Accesați Dashboard-ul la adresa: `http://localhost:1880/ui`.
 
 ---
-*Realizat ca proiect de laborator pentru demonstrarea competențelor în Industrial Internet of Things (IIoT).*
+*Proiect realizat pentru demonstrarea integrării sistemelor industriale cu tehnologii de tip Cloud/IoT.*
