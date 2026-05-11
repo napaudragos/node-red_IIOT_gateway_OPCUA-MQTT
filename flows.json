@@ -1,0 +1,615 @@
+[
+    {
+        "id": "7deb319f042e7b0c",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "b2ef160b01eda281",
+        "type": "OpcUa-Browser",
+        "z": "7deb319f042e7b0c",
+        "endpoint": "7e64c21aa04a38b7",
+        "item": "",
+        "datatype": "",
+        "topic": "ns=4;i=1",
+        "items": [],
+        "name": "",
+        "x": 530,
+        "y": 220,
+        "wires": [
+            [
+                "9fa35a2ffe111caf"
+            ]
+        ]
+    },
+    {
+        "id": "b10890c16507b2d6",
+        "type": "inject",
+        "z": "7deb319f042e7b0c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "2",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 310,
+        "y": 220,
+        "wires": [
+            [
+                "b2ef160b01eda281"
+            ]
+        ]
+    },
+    {
+        "id": "f8660ba5ab977d2f",
+        "type": "debug",
+        "z": "7deb319f042e7b0c",
+        "name": "debug 1",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 920,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "9fa35a2ffe111caf",
+        "type": "function",
+        "z": "7deb319f042e7b0c",
+        "name": "Extract NodeID",
+        "func": "function setID(item, index) {\nvar fullname = {\"nodeId\": item};\nreturn fullname;\n}\nlet opcTags = msg.payload;\nlet nodeIds = [];\nopcTags.forEach(function(tag) {\nif(tag.item.dataType != \"Null\"){\nnodeIds.push(tag.item.nodeId);\n}\n});\nvar output = nodeIds.map(setID);\nflow.set(\"opcNodeIds\", output);\nmsg.payload = output;\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 740,
+        "y": 220,
+        "wires": [
+            [
+                "f8660ba5ab977d2f"
+            ]
+        ]
+    },
+    {
+        "id": "acea1ef26522ea95",
+        "type": "OpcUa-Client",
+        "z": "7deb319f042e7b0c",
+        "endpoint": "7e64c21aa04a38b7",
+        "action": "subscribe",
+        "deadbandtype": "a",
+        "deadbandvalue": 1,
+        "time": "500",
+        "timeUnit": "ms",
+        "certificate": "n",
+        "localfile": "",
+        "localkeyfile": "",
+        "securitymode": "None",
+        "securitypolicy": "None",
+        "useTransport": false,
+        "maxChunkCount": 1,
+        "maxMessageSize": 8192,
+        "receiveBufferSize": 8192,
+        "sendBufferSize": 8192,
+        "name": "Subscribe",
+        "x": 660,
+        "y": 520,
+        "wires": [
+            [
+                "1e26a956e8e41306",
+                "86062a37dc932235"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "7720b624d4078d9f",
+        "type": "inject",
+        "z": "7deb319f042e7b0c",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": true,
+        "onceDelay": "5",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 250,
+        "y": 520,
+        "wires": [
+            [
+                "880109c9469f6a2d"
+            ]
+        ]
+    },
+    {
+        "id": "880109c9469f6a2d",
+        "type": "function",
+        "z": "7deb319f042e7b0c",
+        "name": "function 2",
+        "func": "msg.payload = flow.get(\"opcNodeIds\");\nmsg.topic = \"multiple\"; \nreturn msg",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 440,
+        "y": 520,
+        "wires": [
+            [
+                "acea1ef26522ea95",
+                "2ed5bcc591f5e6b2"
+            ]
+        ]
+    },
+    {
+        "id": "2684631d8e9e6f61",
+        "type": "debug",
+        "z": "7deb319f042e7b0c",
+        "name": "debug 2",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1240,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "2ed5bcc591f5e6b2",
+        "type": "debug",
+        "z": "7deb319f042e7b0c",
+        "name": "debug 3",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 620,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "1e26a956e8e41306",
+        "type": "function",
+        "z": "7deb319f042e7b0c",
+        "name": "Filtrare Potentiometru Scalat",
+        "func": "if(msg.topic === \"ns=4;i=81\")\n    {\n    msg.topic=\"senzor/potentiometru\";\n    msg.payload=msg.payload.value.value;\n    return msg;\n    }\nelse\n    return null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 500,
+        "wires": [
+            [
+                "f20c1551739f94f6",
+                "2684631d8e9e6f61"
+            ]
+        ]
+    },
+    {
+        "id": "f20c1551739f94f6",
+        "type": "mqtt out",
+        "z": "7deb319f042e7b0c",
+        "name": "",
+        "topic": "",
+        "qos": "0",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "6063f187f687b1de",
+        "x": 1250,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "b3e26273f890a6db",
+        "type": "inject",
+        "z": "7deb319f042e7b0c",
+        "name": "Conectare la broker",
+        "props": [
+            {
+                "p": "action",
+                "v": "connect",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "broker",
+                "v": "{\"broker\":\"192.168.1.21\",\"port\":\"1883\"}",
+                "vt": "json"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 890,
+        "y": 400,
+        "wires": [
+            [
+                "f20c1551739f94f6"
+            ]
+        ]
+    },
+    {
+        "id": "ec08eb0524e86d2b",
+        "type": "mqtt in",
+        "z": "7deb319f042e7b0c",
+        "name": "",
+        "topic": "",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "6063f187f687b1de",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 1,
+        "x": 530,
+        "y": 700,
+        "wires": [
+            [
+                "189fa256a79c6921",
+                "116d40630eb74aab",
+                "94d7808f5edade13"
+            ]
+        ]
+    },
+    {
+        "id": "86062a37dc932235",
+        "type": "function",
+        "z": "7deb319f042e7b0c",
+        "name": "Filtrare Cuvant Avarii Motor",
+        "func": "if(msg.topic === \"ns=4;i=61\")\n    {\n    msg.topic=\"senzor/cuvant_avarii_motor\";\n    msg.payload=msg.payload.value.value;\n    return msg;\n    }\nelse\n    return null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 900,
+        "y": 540,
+        "wires": [
+            [
+                "f20c1551739f94f6",
+                "2684631d8e9e6f61"
+            ]
+        ]
+    },
+    {
+        "id": "d2a438885c864b02",
+        "type": "inject",
+        "z": "7deb319f042e7b0c",
+        "name": "Deconectare la broker",
+        "props": [
+            {
+                "p": "action",
+                "v": "disconnect",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "broker",
+                "v": "{\"broker\":\"192.168.1.21\",\"port\":\"1883\"}",
+                "vt": "json"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "x": 900,
+        "y": 440,
+        "wires": [
+            [
+                "f20c1551739f94f6"
+            ]
+        ]
+    },
+    {
+        "id": "6ad50f97986e5778",
+        "type": "inject",
+        "z": "7deb319f042e7b0c",
+        "name": "Abonare topic-uri",
+        "props": [
+            {
+                "p": "action",
+                "v": "subscribe",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "senzor/#",
+        "x": 240,
+        "y": 660,
+        "wires": [
+            [
+                "ec08eb0524e86d2b"
+            ]
+        ]
+    },
+    {
+        "id": "3d2123fe12c05465",
+        "type": "inject",
+        "z": "7deb319f042e7b0c",
+        "name": "Dezabonare topic-uri",
+        "props": [
+            {
+                "p": "action",
+                "v": "unsubscribe",
+                "vt": "str"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "senzor/#",
+        "x": 250,
+        "y": 720,
+        "wires": [
+            [
+                "ec08eb0524e86d2b"
+            ]
+        ]
+    },
+    {
+        "id": "189fa256a79c6921",
+        "type": "debug",
+        "z": "7deb319f042e7b0c",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 800,
+        "wires": []
+    },
+    {
+        "id": "ced8b6bef6d3b20b",
+        "type": "ui_gauge",
+        "z": "7deb319f042e7b0c",
+        "name": "",
+        "group": "23ae5c816d6becef",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "gtype": "donut",
+        "title": "gauge",
+        "label": "units",
+        "format": "{{value}}",
+        "min": 0,
+        "max": "100",
+        "colors": [
+            "#00b500",
+            "#e6e600",
+            "#ca3838"
+        ],
+        "seg1": "",
+        "seg2": "",
+        "diff": false,
+        "className": "",
+        "x": 1170,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "116d40630eb74aab",
+        "type": "function",
+        "z": "7deb319f042e7b0c",
+        "name": "Dashboard Potentiometru",
+        "func": "if(msg.topic === \"senzor/potentiometru\")\n    {\n    return {payload : msg.payload};\n    }\nelse\n    return null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 770,
+        "y": 660,
+        "wires": [
+            [
+                "ced8b6bef6d3b20b",
+                "8a8d30cac19510e4"
+            ]
+        ]
+    },
+    {
+        "id": "94d7808f5edade13",
+        "type": "function",
+        "z": "7deb319f042e7b0c",
+        "name": "Dashboard Cuvant Avarii Motor",
+        "func": "if(msg.topic === \"senzor/cuvant_avarii_motor\")\n    {\n    return {payload : msg.payload};\n    }\nelse\n    return null;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 740,
+        "wires": [
+            [
+                "8980925a1df3f28e",
+                "8a8d30cac19510e4"
+            ]
+        ]
+    },
+    {
+        "id": "8980925a1df3f28e",
+        "type": "ui_text",
+        "z": "7deb319f042e7b0c",
+        "group": "d7a020717d6a294d",
+        "order": 0,
+        "width": 0,
+        "height": 0,
+        "name": "",
+        "label": "Cuvant Avarii Motor = ",
+        "format": "{{msg.payload}}",
+        "layout": "row-spread",
+        "className": "",
+        "style": false,
+        "font": "",
+        "fontSize": 16,
+        "color": "#000000",
+        "x": 1220,
+        "y": 740,
+        "wires": []
+    },
+    {
+        "id": "8a8d30cac19510e4",
+        "type": "debug",
+        "z": "7deb319f042e7b0c",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1000,
+        "y": 700,
+        "wires": []
+    },
+    {
+        "id": "7e64c21aa04a38b7",
+        "type": "OpcUa-Endpoint",
+        "endpoint": "opc.tcp://192.168.50.96:4840",
+        "secpol": "None",
+        "secmode": "None",
+        "none": true,
+        "login": false,
+        "usercert": false,
+        "usercertificate": "",
+        "userprivatekey": ""
+    },
+    {
+        "id": "6063f187f687b1de",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "localhost",
+        "port": "1883",
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "23ae5c816d6becef",
+        "type": "ui_group",
+        "name": "Potentiometru",
+        "tab": "db89b19eed184c4b",
+        "order": 1,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "d7a020717d6a294d",
+        "type": "ui_group",
+        "name": "Cuvant avarii motor",
+        "tab": "db89b19eed184c4b",
+        "order": 2,
+        "disp": true,
+        "width": "6",
+        "collapse": false,
+        "className": ""
+    },
+    {
+        "id": "db89b19eed184c4b",
+        "type": "ui_tab",
+        "name": "Tab 1",
+        "icon": "dashboard",
+        "order": 1
+    }
+]
