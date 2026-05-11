@@ -1,10 +1,9 @@
-# 🌐 Industrial IIoT Gateway: Integrare OPC UA și MQTT în Node-RED
+# 🌐 Industrial IIoT Gateway: OPC UA & MQTT
 
-Acest proiect a fost realizat în cadrul laboratoarelor de specialitate din anul 4 (Politehnica) și reprezintă o soluție de tip **IIoT Gateway**. Rolul său este de a prelua date din echipamente industriale (via OPC UA) și de a le transpună într-un format accesibil pentru monitorizare de la distanță (via MQTT).
+Soluție de monitorizare realizată în Node-RED (Proiect Lab, Anul 4 Poli) pentru integrarea datelor industriale (**OPC UA**) în fluxuri IoT (**MQTT**). 
 
-> [!IMPORTANT]
-> **Context Laborator:** Aceasta este versiunea originală care a funcționat cu succes pe aparatura de laborator (PLC Siemens, server OPC UA și senzori industriali). Proiectul demonstrează managementul fluxului de date între protocoale industriale (OT) și protocoale IoT (IT).
-
+> [!NOTE]
+> **Hardware Lab:** Versiune testată și funcțională pe echipamente reale (PLC Siemens, senzori industriali), demonstrând convergența dintre mediul industrial (OT) și cel informatic (IT).
 ---
 
 ## 📊 Arhitectura și Logică
