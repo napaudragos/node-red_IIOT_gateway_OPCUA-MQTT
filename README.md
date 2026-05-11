@@ -60,5 +60,4 @@ Spre deosebire de un sistem complet automatizat, am ales să implementez control
 4. Apăsați **Deploy**.
 5. Accesați Dashboard-ul la adresa: `http://localhost:1880/ui`.
 
----
-*Proiect realizat pentru demonstrarea integrării sistemelor industriale cu tehnologii de tip Cloud/IoT.*
+
