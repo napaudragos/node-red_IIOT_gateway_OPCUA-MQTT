@@ -3,7 +3,7 @@
 Acest proiect a fost dezvoltat în cadrul laboratoarelor de specialitate (Anul 4, Politehnica) și servește drept punte de legătură (Gateway) între protocoalele industriale clasice și tehnologiile moderne de tip IoT.
 
 > [!IMPORTANT]
-> **Notă Laborator:** Aceasta este versiunea finală care a funcționat perfect cu aparatura reală din laborator (PLC, senzori industriali și server OPC UA). Pentru rularea locală, nodurile OPC UA necesită prezența serverului la IP-ul configurat în flow.
+> **Notă Laborator:** Aceasta este versiunea finală care a funcționat perfect cu aparatura reală din laborator (PLC, senzori industriali și server OPC UA).
 
 ---
 
